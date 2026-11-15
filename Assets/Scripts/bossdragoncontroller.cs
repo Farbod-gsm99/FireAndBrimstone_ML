@@ -183,5 +183,14 @@ namespace FireAndBrimstone
                 }
             }
         }
+
+
+        public void SetExitDoorBlocked(bool blocked)
+        {
+            if (exitDoorBarrierVisual != null)
+            {
+                exitDoorBarrierVisual.SetActive(blocked);
+            }
+        }
     }
 }

@@ -63,6 +63,10 @@ namespace FireAndBrimstone
         private bool _isWaveErupting = false;
         private Transform _trackedAgentTransform;
 
+        // Pending agent death after a gargoyle hits it.
+        private bool _pendingAgentFireDeath = false;
+        private float _pendingAgentFireDeathTimer = 0f;
+
         public void ResetRoom1MagmaGrid()
         {
             // Randomize starting wave row & safe pocket column (prevents blind keystroke memorization)
@@ -90,13 +94,33 @@ namespace FireAndBrimstone
                 }
                 if (g.fireBeamVFX != null && g.fireBeamVFX.isPlaying)
                 {
-                    g.fireBeamVFX.Stop();
+                        g.fireBeamVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 }
             }
+            _pendingAgentFireDeath = false;
+            _pendingAgentFireDeathTimer = 0f;
         }
 
         private void Update()
         {
+            // Process a pending death before updating the hazards.
+            if (_pendingAgentFireDeath)
+            {
+                _pendingAgentFireDeathTimer -= Time.deltaTime;
+
+                if (_pendingAgentFireDeathTimer <= 0f)
+                {
+                    _pendingAgentFireDeath = false;
+
+                    if (arenaAgent != null)
+                    {
+                        arenaAgent.KillAgentWithFire();
+                    }
+
+                    return;
+                }
+            }
+
             if (curriculumManager == null) return;
 
             if (curriculumManager.CurrentRoomIndex == 0)
@@ -194,7 +218,11 @@ namespace FireAndBrimstone
 
             foreach (var g in room2Gargoyles)
             {
-                if (g.muzzleTransform == null) continue;
+                Transform muzzle = g.aimLaserLine != null
+                    ? g.aimLaserLine.transform
+                    : g.muzzleTransform;
+
+                if (muzzle == null) continue;
 
                 totalCycle = g.fireInterval + g.aimWarningDuration + g.beamActiveDuration;
                 g.timer += Time.deltaTime;
@@ -205,7 +233,7 @@ namespace FireAndBrimstone
                         g.fireBeamVFX.Stop();
                 }
 
-                Vector3 origin = g.muzzleTransform.position;
+                Vector3 origin = muzzle.position;
                 Vector3 currentAgentCenter = _trackedAgentTransform.position + Vector3.up * 0.4f;
 
                 if (g.timer < g.fireInterval)
@@ -225,7 +253,7 @@ namespace FireAndBrimstone
                     if (g.fireBeamVFX != null && !g.fireBeamVFX.isPlaying)
                     {
                         g.fireBeamVFX.transform.rotation = Quaternion.LookRotation((g.lockedTargetWorldPos - origin).normalized);
-                        g.fireBeamVFX.Play();
+                        g.fireBeamVFX.Play(true);
                     }
                     UpdateGargoyleLaser(g, origin, g.lockedTargetWorldPos, laserFiringColor, 0.22f, isFiringBeam: true);
                 }
@@ -250,9 +278,23 @@ namespace FireAndBrimstone
 
                 // If firing and the beam hits the Agent (not blocked by an obsidian Cover pillar), kill the agent
                 if (isFiringBeam && arenaAgent != null &&
-                    (hit.collider.gameObject == arenaAgent.gameObject || hit.collider.transform.IsChildOf(arenaAgent.transform)))
+                    (hit.collider.gameObject == arenaAgent.gameObject ||
+                    hit.collider.transform.IsChildOf(arenaAgent.transform)))
                 {
-                    arenaAgent.KillAgentWithFire();
+                    // Don't end the episode immediately.
+                    // Let the fire effect play until this firing phase ends.
+                    if (!_pendingAgentFireDeath)
+                    {
+                        _pendingAgentFireDeath = true;
+
+                        float firingPhaseEnd =
+                            g.fireInterval +
+                            g.aimWarningDuration +
+                            g.beamActiveDuration;
+
+                        _pendingAgentFireDeathTimer =
+                            Mathf.Max(0.05f, firingPhaseEnd - g.timer);
+                    }
                 }
             }
 

@@ -130,6 +130,11 @@ namespace FireAndBrimstone
                 if (room4MagmaCore != null) room4MagmaCore.ResetCore(isBossRoom: true);
                 if (room3And4Controller != null) room3And4Controller.ResetRoom4Boss();
             }
+            // Synchronize the physical exit gate with the logical exit state.
+            if (room3And4Controller != null)
+            {
+                room3And4Controller.SetExitDoorBlocked(!IsExitUnlocked);
+            }
 
             if (arenaHUD != null)
             {

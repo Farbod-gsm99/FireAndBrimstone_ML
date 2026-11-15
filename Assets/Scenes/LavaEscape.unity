@@ -2564,7 +2564,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -5356,6 +5356,10 @@ PrefabInstance:
     - target: {fileID: 8891297334280618237, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
       propertyPath: playOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891297334280618237, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
+      propertyPath: ShapeModule.enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8891649225594186379, guid: c4ed38c72957f2241ad144a1614956d9, type: 3}
       propertyPath: playOnAwake
@@ -11494,7 +11498,7 @@ GameObject:
   - component: {fileID: 1611265402}
   m_Layer: 0
   m_Name: CubeAgent
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11617,7 +11621,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: CubeAgent
   TeamId: 0
   m_UseChildSensors: 1
@@ -12530,33 +12534,33 @@ MonoBehaviour:
   - muzzleTransform: {fileID: 1030781387}
     aimLaserLine: {fileID: 1739598980}
     fireBeamVFX: {fileID: 699540440}
-    fireInterval: 2.2
-    aimWarningDuration: 0
-    beamActiveDuration: 0
+    fireInterval: 1.2
+    aimWarningDuration: 0.3
+    beamActiveDuration: 0.45
     timer: 0
     lockedTargetWorldPos: {x: 0, y: 0, z: 0}
   - muzzleTransform: {fileID: 146903855}
     aimLaserLine: {fileID: 68687447}
     fireBeamVFX: {fileID: 1596194866}
-    fireInterval: 2.3
-    aimWarningDuration: 0
-    beamActiveDuration: 0
+    fireInterval: 1.3
+    aimWarningDuration: 0.3
+    beamActiveDuration: 0.45
     timer: 0
     lockedTargetWorldPos: {x: 0, y: 0, z: 0}
   - muzzleTransform: {fileID: 912388899}
     aimLaserLine: {fileID: 2076343385}
     fireBeamVFX: {fileID: 1850077602}
-    fireInterval: 2.5
-    aimWarningDuration: 0
-    beamActiveDuration: 0
+    fireInterval: 1.5
+    aimWarningDuration: 0.3
+    beamActiveDuration: 0.45
     timer: 0
     lockedTargetWorldPos: {x: 0, y: 0, z: 0}
   - muzzleTransform: {fileID: 278294702}
     aimLaserLine: {fileID: 1046636770}
     fireBeamVFX: {fileID: 1456597839}
-    fireInterval: 2.6
-    aimWarningDuration: 0
-    beamActiveDuration: 0
+    fireInterval: 1.6
+    aimWarningDuration: 0.3
+    beamActiveDuration: 0.45
     timer: 0
     lockedTargetWorldPos: {x: 0, y: 0, z: 0}
   gargoyleObstructionMask:
@@ -12579,7 +12583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fea09e2c4aee954fa282340ed6ae52a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arenaMode: -1
+  arenaMode: 1
   room1MagmaGrid: {fileID: 1347434173}
   room2CrossfireCourtyard: {fileID: 1948627815}
   room3GeyserPlug: {fileID: 336935657}
